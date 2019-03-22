@@ -20,6 +20,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - "zookeeper"
+
   consumer:
     image: consumer
     hostname: consumer
@@ -27,10 +28,14 @@ services:
         APP_NAME: "consumer"
         KAFKA_HOSTNAME: "kafka"
         TOPICS: "MyTopic"
+        HTTP_HOSTNAME: 'http://async-http-service'
+        HTTP_PORT: 8889
     depends_on:
       - "zookeeper"
       - "kafka"
       - "producer"
+      - "async-http-service"
+
   producer:
     image: producer
     hostname: producer
@@ -41,4 +46,22 @@ services:
     depends_on:
       - "zookeeper"
       - "kafka"
+
+  sync-http-service:
+    image: sync-http-service
+    hostname: sync-http-service
+    environment:
+        APP_NAME: "sync-http-service"
+        PORT: 8888
+    ports:
+      - "8888:8888"
+
+  async-http-service:
+    image: async-http-service
+    hostname: async-http-service
+    environment:
+        APP_NAME: "async-http-service"
+        PORT: 8889
+    ports:
+      - "8889:8889"
 

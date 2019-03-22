@@ -1,13 +1,23 @@
 import os
+import sys
 import time
 import random
 import logging
 
 from confluent_kafka import Producer
 
+logging.basicConfig(level=logging.DEBUG,
+                    format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
+                    handlers=[logging.StreamHandler(sys.stdout)])
 
-producer = Producer({'bootstrap.servers': os.environ['KAFKA_HOSTNAME']})
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(os.environ['APP_NAME'])
+
+while True:
+    try:
+        producer = Producer({'bootstrap.servers': os.environ['KAFKA_HOSTNAME']})
+        break
+    except:
+        time.sleep(1)
 
 
 def on_success(err, msg):
