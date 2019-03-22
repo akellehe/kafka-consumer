@@ -113,6 +113,7 @@ async def main(consumer, http_client):
                 continue
             elif msg.error():
                 logger.info('Got an error in the consumer %s', msg.error())
+                await asyncio.sleep(1)
             await handle_message(http_client, consumer, msg)
         except asyncio.CancelledError:
             logger.info("Cancelling.")
